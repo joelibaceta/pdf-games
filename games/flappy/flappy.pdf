@@ -1,0 +1,543 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+  /AcroForm 3 0 R
+  /Names 4 0 R
+  /OpenAction << /S /JavaScript /JS 6 0 R >>
+>>
+endobj
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [5 0 R]
+  /Count 1
+>>
+endobj
+3 0 obj
+<<
+  /Fields [8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 19 0 R 20 0 R 21 0 R]
+  /DR << /Font << /Helvetica << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>
+>>
+endobj
+4 0 obj
+<<
+  /JavaScript << /Names [(gameScript) << /S /JavaScript /JS 6 0 R >>] >>
+>>
+endobj
+5 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 500 200]
+  /Annots [8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 19 0 R 20 0 R 21 0 R]
+>>
+endobj
+6 0 obj
+<<
+  /Length 9207
+  /Subtype /JavaScript
+>>
+stream
+if (typeof _pdfgame_loaded === 'undefined') {
+var _pdfgame_loaded = true;
+/* PDF Game Engine - Acrobat JS (ES3) */
+var _doc = this; // captured at script top level - in Acrobat doc context this IS the document
+
+var Engine = (function () {
+    var _intervalId = null;
+    var PAGE_H = 200;
+
+    function _pdfRect(gx, gy, w, h) {
+        var py = PAGE_H - gy - h;
+        return [gx, py, gx + w, py + h];
+    }
+
+    function _gamePos(f) {
+        var r = f.rect;
+        var w = r[2] - r[0];
+        var h = r[3] - r[1];
+        return { x: r[0], y: PAGE_H - r[3], w: w, h: h };
+    }
+
+    return {
+        _updateFn: null,
+        _sprites: {"pipe_top_1": 1, "pipe_bot_1": 1, "pipe_top_2": 1, "pipe_bot_2": 1, "bird": 1, "ground": 1},
+        _sizes: {"pipe_top_1": {w: 40, h: 170}, "pipe_bot_1": {w: 40, h: 150}, "pipe_top_2": {w: 40, h: 170}, "pipe_bot_2": {w: 40, h: 150}, "bird": {w: 24, h: 24}, "ground": {w: 500, h: 10}},
+        _pos: {},     /* position registry: {name: {x,y,w,h}} in game coords */
+
+        start: function (updateFn, fps) {
+            if (_intervalId !== null) { return; } /* guard: only one interval */
+            Engine._updateFn = updateFn;
+            _intervalId = app.setInterval(
+                "Engine._tick()", Math.round(1000 / fps)
+            );
+        },
+
+        stop: function () {
+            if (_intervalId !== null) {
+                app.clearInterval(_intervalId);
+                _intervalId = null;
+            }
+        },
+
+        _tick: function () {
+            if (Engine._updateFn) { Engine._updateFn(); }
+        },
+
+        _field: function (name) {
+            var nf = Engine._sprites[name] || 1;
+            var fname = nf > 1 ? "sprite_" + name + "_0" : "sprite_" + name;
+            return _doc.getField(fname);
+        },
+
+        move: function (name, gx, gy) {
+            var nf = Engine._sprites[name] || 1;
+            var sz = Engine._sizes[name] || { w: 0, h: 0 };
+            var posW = sz.w, posH = sz.h;
+            for (var fi = 0; fi < nf; fi++) {
+                var fname = nf > 1 ? "sprite_" + name + "_" + fi : "sprite_" + name;
+                var f = _doc.getField(fname);
+                if (!f) { continue; }
+                f.rect = _pdfRect(gx, gy, posW, posH);
+            }
+            Engine._pos[name] = { x: gx, y: gy, w: posW, h: posH };
+        },
+
+        getPos: function (name) {
+            if (Engine._pos[name]) { return Engine._pos[name]; }
+            var f = Engine._field(name);
+            if (!f) { return { x: 0, y: 0, w: 0, h: 0 }; }
+            return _gamePos(f);
+        },
+
+        show: function (name) {
+            var f = _doc.getField("sprite_" + name);
+            if (f) { f.display = display.visible; }
+        },
+
+        hide: function (name) {
+            var f = _doc.getField("sprite_" + name);
+            if (f) { f.display = display.hidden; }
+        },
+
+        setText: function (name, val) {
+            var f = _doc.getField("text_" + name);
+            if (f) { f.value = "" + val; }
+        },
+
+        collides: function (a, b) {
+            var pa = Engine.getPos(a);
+            var pb = Engine.getPos(b);
+            return !(
+                pa.x + pa.w <= pb.x || pb.x + pb.w <= pa.x ||
+                pa.y + pa.h <= pb.y || pb.y + pb.h <= pa.y
+            );
+        },
+
+        random: function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+
+        onInput: function (cb) { Engine._inputCb = cb; },
+
+        triggerInput: function () {
+            if (Engine._inputCb) { Engine._inputCb(); }
+        },
+
+        _inputCb: null
+    };
+})();
+
+(function() { for (var sn in Engine._sprites) { var nf = Engine._sprites[sn]; for (var fi = 1; fi < nf; fi++) { var f = _doc.getField('sprite_' + sn + '_' + fi); if (f) { f.display = display.hidden; } } } })();
+var _pipe_top_1_x = 450;
+var _pipe_top_1_y = -150;
+var _pipe_bot_1_x = 450;
+var _pipe_bot_1_y = 130;
+var _pipe_top_2_x = 725;
+var _pipe_top_2_y = -150;
+var _pipe_bot_2_x = 725;
+var _pipe_bot_2_y = 130;
+var _bird_x = 80;
+var _bird_y = 85;
+var _ground_x = 0;
+var _ground_y = 190;
+var vy = 0;
+var alive = true;
+var points = 0;
+var pipe_x1 = 450;
+var pipe_x2 = 725;
+var gap_top1 = 80;
+var gap_top2 = 55;
+var gap_sz1 = 80;
+var gap_sz2 = 80;
+var scored1 = false;
+var scored2 = false;
+
+function _on_start() {
+    _pipe_top_1_y = (gap_top1 - 170);
+    Engine.move("pipe_top_1", _pipe_top_1_x, _pipe_top_1_y);
+    _pipe_bot_1_y = (gap_top1 + gap_sz1);
+    Engine.move("pipe_bot_1", _pipe_bot_1_x, _pipe_bot_1_y);
+    _pipe_top_2_y = (gap_top2 - 170);
+    Engine.move("pipe_top_2", _pipe_top_2_x, _pipe_top_2_y);
+    _pipe_bot_2_y = (gap_top2 + gap_sz2);
+    Engine.move("pipe_bot_2", _pipe_bot_2_x, _pipe_bot_2_y);
+}
+
+function _on_update() {
+    if ((!alive)) {
+        return;
+    }
+    vy = (vy + 2);
+    _bird_y = (_bird_y + vy);
+    Engine.move("bird", _bird_x, _bird_y);
+    if ((_bird_y < 0)) {
+        _bird_y = 0;
+        Engine.move("bird", _bird_x, _bird_y);
+        vy = 0;
+    }
+    if ((_bird_y >= 166)) {
+        _bird_y = 166;
+        Engine.move("bird", _bird_x, _bird_y);
+        alive = false;
+        Engine.setText("gameover", "GAME OVER - click to restart");
+        return;
+    }
+    pipe_x1 = (pipe_x1 - 5);
+    _pipe_top_1_x = pipe_x1;
+    Engine.move("pipe_top_1", _pipe_top_1_x, _pipe_top_1_y);
+    _pipe_bot_1_x = pipe_x1;
+    Engine.move("pipe_bot_1", _pipe_bot_1_x, _pipe_bot_1_y);
+    pipe_x2 = (pipe_x2 - 5);
+    _pipe_top_2_x = pipe_x2;
+    Engine.move("pipe_top_2", _pipe_top_2_x, _pipe_top_2_y);
+    _pipe_bot_2_x = pipe_x2;
+    Engine.move("pipe_bot_2", _pipe_bot_2_x, _pipe_bot_2_y);
+    if ((pipe_x1 < -40)) {
+        pipe_x1 = Engine.random(500, 750);
+        gap_top1 = Engine.random(35, 115);
+        gap_sz1 = Engine.random(65, 95);
+        _pipe_top_1_x = pipe_x1;
+        Engine.move("pipe_top_1", _pipe_top_1_x, _pipe_top_1_y);
+        _pipe_bot_1_x = pipe_x1;
+        Engine.move("pipe_bot_1", _pipe_bot_1_x, _pipe_bot_1_y);
+        _pipe_top_1_y = (gap_top1 - 170);
+        Engine.move("pipe_top_1", _pipe_top_1_x, _pipe_top_1_y);
+        _pipe_bot_1_y = (gap_top1 + gap_sz1);
+        Engine.move("pipe_bot_1", _pipe_bot_1_x, _pipe_bot_1_y);
+        scored1 = false;
+    }
+    if ((pipe_x2 < -40)) {
+        pipe_x2 = Engine.random(500, 750);
+        gap_top2 = Engine.random(35, 115);
+        gap_sz2 = Engine.random(65, 95);
+        _pipe_top_2_x = pipe_x2;
+        Engine.move("pipe_top_2", _pipe_top_2_x, _pipe_top_2_y);
+        _pipe_bot_2_x = pipe_x2;
+        Engine.move("pipe_bot_2", _pipe_bot_2_x, _pipe_bot_2_y);
+        _pipe_top_2_y = (gap_top2 - 170);
+        Engine.move("pipe_top_2", _pipe_top_2_x, _pipe_top_2_y);
+        _pipe_bot_2_y = (gap_top2 + gap_sz2);
+        Engine.move("pipe_bot_2", _pipe_bot_2_x, _pipe_bot_2_y);
+        scored2 = false;
+    }
+    if (((!scored1) && (pipe_x1 < 65))) {
+        points = (points + 1);
+        Engine.setText("score", points);
+        scored1 = true;
+    }
+    if (((!scored2) && (pipe_x2 < 65))) {
+        points = (points + 1);
+        Engine.setText("score", points);
+        scored2 = true;
+    }
+    if (((((_bird_x + 4 < (_pipe_top_1_x + 40 - 6) && _pipe_top_1_x + 6 < (_bird_x + 24 - 4) && _bird_y < (_pipe_top_1_y + 170) && _pipe_top_1_y < (_bird_y + 24)) || (_bird_x + 4 < (_pipe_bot_1_x + 40 - 6) && _pipe_bot_1_x + 6 < (_bird_x + 24 - 4) && _bird_y < (_pipe_bot_1_y + 150) && _pipe_bot_1_y < (_bird_y + 24))) || (_bird_x + 4 < (_pipe_top_2_x + 40 - 6) && _pipe_top_2_x + 6 < (_bird_x + 24 - 4) && _bird_y < (_pipe_top_2_y + 170) && _pipe_top_2_y < (_bird_y + 24))) || (_bird_x + 4 < (_pipe_bot_2_x + 40 - 6) && _pipe_bot_2_x + 6 < (_bird_x + 24 - 4) && _bird_y < (_pipe_bot_2_y + 150) && _pipe_bot_2_y < (_bird_y + 24)))) {
+        alive = false;
+        Engine.setText("gameover", "GAME OVER - click to restart");
+    }
+}
+
+function _on_click() {
+    if ((!alive)) {
+        _on_restart();
+        return;
+    }
+    vy = -12;
+}
+
+function _on_restart() {
+    alive = true;
+    vy = 0;
+    points = 0;
+    _bird_y = 85;
+    Engine.move("bird", _bird_x, _bird_y);
+    pipe_x1 = 450;
+    pipe_x2 = 725;
+    gap_top1 = 80;
+    gap_top2 = 55;
+    gap_sz1 = 80;
+    gap_sz2 = 80;
+    _pipe_top_1_x = pipe_x1;
+    Engine.move("pipe_top_1", _pipe_top_1_x, _pipe_top_1_y);
+    _pipe_bot_1_x = pipe_x1;
+    Engine.move("pipe_bot_1", _pipe_bot_1_x, _pipe_bot_1_y);
+    _pipe_top_2_x = pipe_x2;
+    Engine.move("pipe_top_2", _pipe_top_2_x, _pipe_top_2_y);
+    _pipe_bot_2_x = pipe_x2;
+    Engine.move("pipe_bot_2", _pipe_bot_2_x, _pipe_bot_2_y);
+    _pipe_top_1_y = (gap_top1 - 170);
+    Engine.move("pipe_top_1", _pipe_top_1_x, _pipe_top_1_y);
+    _pipe_bot_1_y = (gap_top1 + gap_sz1);
+    Engine.move("pipe_bot_1", _pipe_bot_1_x, _pipe_bot_1_y);
+    _pipe_top_2_y = (gap_top2 - 170);
+    Engine.move("pipe_top_2", _pipe_top_2_x, _pipe_top_2_y);
+    _pipe_bot_2_y = (gap_top2 + gap_sz2);
+    Engine.move("pipe_bot_2", _pipe_bot_2_x, _pipe_bot_2_y);
+    scored1 = false;
+    scored2 = false;
+    Engine.setText("gameover", "");
+}
+
+Engine.onInput(function () {
+    if (typeof _on_click === 'function') { _on_click(); }
+});
+
+Engine.start(_on_update, 10);
+
+_on_start();
+}
+endstream
+endobj
+7 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 40 170] /Resources << >> /Length 24 >>
+stream
+0 0 0 rg
+0 0 40 170 re
+f
+endstream
+endobj
+8 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_pipe_top_1)
+  /Rect [450 180 490 350]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 7 0 R >>
+  /F 4
+>>
+endobj
+9 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 40 150] /Resources << >> /Length 24 >>
+stream
+0 0 0 rg
+0 0 40 150 re
+f
+endstream
+endobj
+10 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_pipe_bot_1)
+  /Rect [450 -80 490 70]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 9 0 R >>
+  /F 4
+>>
+endobj
+11 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 40 170] /Resources << >> /Length 24 >>
+stream
+0 0 0 rg
+0 0 40 170 re
+f
+endstream
+endobj
+12 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_pipe_top_2)
+  /Rect [725 180 765 350]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 11 0 R >>
+  /F 4
+>>
+endobj
+13 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 40 150] /Resources << >> /Length 24 >>
+stream
+0 0 0 rg
+0 0 40 150 re
+f
+endstream
+endobj
+14 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_pipe_bot_2)
+  /Rect [725 -80 765 70]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 13 0 R >>
+  /F 4
+>>
+endobj
+15 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 24 24] /Resources << >> /Length 449 >>
+stream
+0 0 0 rg
+9 21 3 3 re
+12 21 3 3 re
+15 21 3 3 re
+6 18 3 3 re
+12 18 3 3 re
+15 18 3 3 re
+18 18 3 3 re
+3 15 3 3 re
+6 15 3 3 re
+9 15 3 3 re
+12 15 3 3 re
+15 15 3 3 re
+18 15 3 3 re
+21 15 3 3 re
+0 12 3 3 re
+3 12 3 3 re
+6 12 3 3 re
+9 12 3 3 re
+12 12 3 3 re
+15 12 3 3 re
+18 12 3 3 re
+21 12 3 3 re
+3 9 3 3 re
+6 9 3 3 re
+9 9 3 3 re
+12 9 3 3 re
+15 9 3 3 re
+18 9 3 3 re
+21 9 3 3 re
+6 6 3 3 re
+9 6 3 3 re
+12 6 3 3 re
+15 6 3 3 re
+18 6 3 3 re
+9 3 3 3 re
+12 3 3 3 re
+f
+endstream
+endobj
+16 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_bird)
+  /Rect [80 91 104 115]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 15 0 R >>
+  /F 4
+>>
+endobj
+17 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 500 10] /Resources << >> /Length 24 >>
+stream
+0 0 0 rg
+0 0 500 10 re
+f
+endstream
+endobj
+18 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_ground)
+  /Rect [0 0 500 10]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 17 0 R >>
+  /F 4
+>>
+endobj
+19 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_score)
+  /V (0)
+  /Rect [220 175 280 195]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+20 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_gameover)
+  /V ()
+  /Rect [80 80 420 120]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+21 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (clickzone)
+  /Rect [0 0 500 200]
+  /H /N
+  /A << /S /JavaScript /JS (Engine.triggerInput();) >>
+>>
+endobj
+xref
+0 22
+0000000000 65535 f 
+0000000015 00000 n 
+0000000146 00000 n 
+0000000209 00000 n 
+0000000394 00000 n 
+0000000488 00000 n 
+0000000639 00000 n 
+0000009923 00000 n 
+0000010063 00000 n 
+0000010244 00000 n 
+0000010384 00000 n 
+0000010565 00000 n 
+0000010706 00000 n 
+0000010889 00000 n 
+0000011030 00000 n 
+0000011212 00000 n 
+0000011778 00000 n 
+0000011953 00000 n 
+0000012094 00000 n 
+0000012268 00000 n 
+0000012448 00000 n 
+0000012628 00000 n 
+trailer
+<< /Size 22 /Root 1 0 R >>
+startxref
+12809
+%%EOF

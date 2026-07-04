@@ -1,0 +1,534 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+  /AcroForm 3 0 R
+  /Names 4 0 R
+  /OpenAction << /S /JavaScript /JS 6 0 R >>
+>>
+endobj
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [5 0 R]
+  /Count 1
+>>
+endobj
+3 0 obj
+<<
+  /Fields [8 0 R 10 0 R 12 0 R 14 0 R 15 0 R 16 0 R 17 0 R]
+  /DR << /Font << /Helvetica << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>
+>>
+endobj
+4 0 obj
+<<
+  /JavaScript << /Names [(gameScript) << /S /JavaScript /JS 6 0 R >>] >>
+>>
+endobj
+5 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 500 200]
+  /Annots [8 0 R 10 0 R 12 0 R 14 0 R 15 0 R 16 0 R 17 0 R]
+>>
+endobj
+6 0 obj
+<<
+  /Length 6140
+  /Subtype /JavaScript
+>>
+stream
+if (typeof _pdfgame_loaded === 'undefined') {
+var _pdfgame_loaded = true;
+/* PDF Game Engine - Acrobat JS (ES3) */
+var _doc = this; // captured at script top level - in Acrobat doc context this IS the document
+
+var Engine = (function () {
+    var _intervalId = null;
+    var PAGE_H = 200;
+
+    function _pdfRect(gx, gy, w, h) {
+        var py = PAGE_H - gy - h;
+        return [gx, py, gx + w, py + h];
+    }
+
+    function _gamePos(f) {
+        var r = f.rect;
+        var w = r[2] - r[0];
+        var h = r[3] - r[1];
+        return { x: r[0], y: PAGE_H - r[3], w: w, h: h };
+    }
+
+    return {
+        _updateFn: null,
+        _sprites: {"dino": 1, "cactus1": 1, "cactus2": 1, "floor": 1},
+        _sizes: {"dino": {w: 48, h: 48}, "cactus1": {w: 24, h: 24}, "cactus2": {w: 24, h: 24}, "floor": {w: 500, h: 4}},
+        _pos: {},     /* position registry: {name: {x,y,w,h}} in game coords */
+
+        start: function (updateFn, fps) {
+            if (_intervalId !== null) { return; } /* guard: only one interval */
+            Engine._updateFn = updateFn;
+            _intervalId = app.setInterval(
+                "Engine._tick()", Math.round(1000 / fps)
+            );
+        },
+
+        stop: function () {
+            if (_intervalId !== null) {
+                app.clearInterval(_intervalId);
+                _intervalId = null;
+            }
+        },
+
+        _tick: function () {
+            if (Engine._updateFn) { Engine._updateFn(); }
+        },
+
+        _field: function (name) {
+            var nf = Engine._sprites[name] || 1;
+            var fname = nf > 1 ? "sprite_" + name + "_0" : "sprite_" + name;
+            return _doc.getField(fname);
+        },
+
+        move: function (name, gx, gy) {
+            var nf = Engine._sprites[name] || 1;
+            var sz = Engine._sizes[name] || { w: 0, h: 0 };
+            var posW = sz.w, posH = sz.h;
+            for (var fi = 0; fi < nf; fi++) {
+                var fname = nf > 1 ? "sprite_" + name + "_" + fi : "sprite_" + name;
+                var f = _doc.getField(fname);
+                if (!f) { continue; }
+                f.rect = _pdfRect(gx, gy, posW, posH);
+            }
+            Engine._pos[name] = { x: gx, y: gy, w: posW, h: posH };
+        },
+
+        getPos: function (name) {
+            if (Engine._pos[name]) { return Engine._pos[name]; }
+            var f = Engine._field(name);
+            if (!f) { return { x: 0, y: 0, w: 0, h: 0 }; }
+            return _gamePos(f);
+        },
+
+        show: function (name) {
+            var f = _doc.getField("sprite_" + name);
+            if (f) { f.display = display.visible; }
+        },
+
+        hide: function (name) {
+            var f = _doc.getField("sprite_" + name);
+            if (f) { f.display = display.hidden; }
+        },
+
+        setText: function (name, val) {
+            var f = _doc.getField("text_" + name);
+            if (f) { f.value = "" + val; }
+        },
+
+        collides: function (a, b) {
+            var pa = Engine.getPos(a);
+            var pb = Engine.getPos(b);
+            return !(
+                pa.x + pa.w <= pb.x || pb.x + pb.w <= pa.x ||
+                pa.y + pa.h <= pb.y || pb.y + pb.h <= pa.y
+            );
+        },
+
+        random: function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+
+        onInput: function (cb) { Engine._inputCb = cb; },
+
+        triggerInput: function () {
+            if (Engine._inputCb) { Engine._inputCb(); }
+        },
+
+        _inputCb: null
+    };
+})();
+
+(function() { for (var sn in Engine._sprites) { var nf = Engine._sprites[sn]; for (var fi = 1; fi < nf; fi++) { var f = _doc.getField('sprite_' + sn + '_' + fi); if (f) { f.display = display.hidden; } } } })();
+var _dino_x = 50;
+var _dino_y = 117;
+var _cactus1_x = 480;
+var _cactus1_y = 141;
+var _cactus2_x = 780;
+var _cactus2_y = 141;
+var _floor_x = 0;
+var _floor_y = 165;
+var vy = 0;
+var points = 0;
+var speed = 7;
+var alive = true;
+var tick = 0;
+
+function _on_start() {
+    _cactus1_x = 480;
+    Engine.move("cactus1", _cactus1_x, _cactus1_y);
+    _cactus2_x = 780;
+    Engine.move("cactus2", _cactus2_x, _cactus2_y);
+}
+
+function _on_update() {
+    if ((!alive)) {
+        return;
+    }
+    vy = (vy + 1.5);
+    _dino_y = (_dino_y + vy);
+    Engine.move("dino", _dino_x, _dino_y);
+    if ((_dino_y >= 117)) {
+        _dino_y = 117;
+        Engine.move("dino", _dino_x, _dino_y);
+        vy = 0;
+    }
+    _cactus1_x = (_cactus1_x - speed);
+    Engine.move("cactus1", _cactus1_x, _cactus1_y);
+    if ((_cactus1_x < -30)) {
+        _cactus1_x = Engine.random(480, 900);
+        Engine.move("cactus1", _cactus1_x, _cactus1_y);
+    }
+    _cactus2_x = (_cactus2_x - speed);
+    Engine.move("cactus2", _cactus2_x, _cactus2_y);
+    if ((_cactus2_x < -30)) {
+        _cactus2_x = Engine.random(480, 900);
+        Engine.move("cactus2", _cactus2_x, _cactus2_y);
+    }
+    if (((_dino_x + 8 < (_cactus1_x + 24 - 4) && _cactus1_x + 4 < (_dino_x + 48 - 8) && _dino_y < (_cactus1_y + 24) && _cactus1_y < (_dino_y + 48)) || (_dino_x + 8 < (_cactus2_x + 24 - 4) && _cactus2_x + 4 < (_dino_x + 48 - 8) && _dino_y < (_cactus2_y + 24) && _cactus2_y < (_dino_y + 48)))) {
+        alive = false;
+        _dino_y = 117;
+        Engine.move("dino", _dino_x, _dino_y);
+        Engine.setText("gameover", "GAME OVER - click to restart");
+    }
+    tick = (tick + 1);
+    if ((tick >= 20)) {
+        tick = 0;
+        speed = (speed + 1);
+    }
+    points = (points + 1);
+    Engine.setText("score", points);
+}
+
+function _on_click() {
+    if ((!alive)) {
+        _on_restart();
+        return;
+    }
+    if ((_dino_y >= 117)) {
+        vy = -13;
+    }
+}
+
+function _on_restart() {
+    alive = true;
+    points = 0;
+    speed = 7;
+    vy = 0;
+    tick = 0;
+    _dino_y = 117;
+    Engine.move("dino", _dino_x, _dino_y);
+    _cactus1_x = 520;
+    Engine.move("cactus1", _cactus1_x, _cactus1_y);
+    _cactus2_x = 820;
+    Engine.move("cactus2", _cactus2_x, _cactus2_y);
+    Engine.setText("gameover", "");
+}
+
+Engine.onInput(function () {
+    if (typeof _on_click === 'function') { _on_click(); }
+});
+
+Engine.start(_on_update, 10);
+
+_on_start();
+}
+endstream
+endobj
+7 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 48 48] /Resources << >> /Length 1144 >>
+stream
+0 0 0 rg
+27 45 3 3 re
+30 45 3 3 re
+33 45 3 3 re
+36 45 3 3 re
+24 42 3 3 re
+30 42 3 3 re
+33 42 3 3 re
+36 42 3 3 re
+39 42 3 3 re
+24 39 3 3 re
+27 39 3 3 re
+30 39 3 3 re
+33 39 3 3 re
+36 39 3 3 re
+39 39 3 3 re
+24 36 3 3 re
+27 36 3 3 re
+30 36 3 3 re
+33 36 3 3 re
+36 36 3 3 re
+39 36 3 3 re
+24 33 3 3 re
+27 33 3 3 re
+30 33 3 3 re
+3 30 3 3 re
+21 30 3 3 re
+24 30 3 3 re
+27 30 3 3 re
+30 30 3 3 re
+33 30 3 3 re
+36 30 3 3 re
+3 27 3 3 re
+18 27 3 3 re
+21 27 3 3 re
+24 27 3 3 re
+27 27 3 3 re
+30 27 3 3 re
+3 24 3 3 re
+6 24 3 3 re
+15 24 3 3 re
+18 24 3 3 re
+21 24 3 3 re
+24 24 3 3 re
+27 24 3 3 re
+30 24 3 3 re
+33 24 3 3 re
+3 21 3 3 re
+6 21 3 3 re
+9 21 3 3 re
+15 21 3 3 re
+18 21 3 3 re
+21 21 3 3 re
+24 21 3 3 re
+27 21 3 3 re
+33 21 3 3 re
+6 18 3 3 re
+9 18 3 3 re
+12 18 3 3 re
+15 18 3 3 re
+18 18 3 3 re
+21 18 3 3 re
+24 18 3 3 re
+27 18 3 3 re
+6 15 3 3 re
+9 15 3 3 re
+12 15 3 3 re
+15 15 3 3 re
+18 15 3 3 re
+21 15 3 3 re
+24 15 3 3 re
+27 15 3 3 re
+9 12 3 3 re
+12 12 3 3 re
+15 12 3 3 re
+18 12 3 3 re
+21 12 3 3 re
+24 12 3 3 re
+27 12 3 3 re
+12 9 3 3 re
+15 9 3 3 re
+21 9 3 3 re
+24 9 3 3 re
+12 6 3 3 re
+24 6 3 3 re
+12 3 3 3 re
+24 3 3 3 re
+27 3 3 3 re
+12 0 3 3 re
+15 0 3 3 re
+f
+endstream
+endobj
+8 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_dino)
+  /Rect [50 35 98 83]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 7 0 R >>
+  /F 4
+>>
+endobj
+9 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 24 24] /Resources << >> /Length 309 >>
+stream
+0 0 0 rg
+9 21 3 3 re
+12 21 3 3 re
+9 18 3 3 re
+12 18 3 3 re
+9 15 3 3 re
+12 15 3 3 re
+15 15 3 3 re
+18 15 3 3 re
+21 15 3 3 re
+9 12 3 3 re
+12 12 3 3 re
+0 9 3 3 re
+3 9 3 3 re
+6 9 3 3 re
+9 9 3 3 re
+12 9 3 3 re
+15 9 3 3 re
+9 6 3 3 re
+12 6 3 3 re
+9 3 3 3 re
+12 3 3 3 re
+6 0 3 3 re
+9 0 3 3 re
+12 0 3 3 re
+15 0 3 3 re
+f
+endstream
+endobj
+10 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_cactus1)
+  /Rect [480 35 504 59]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 9 0 R >>
+  /F 4
+>>
+endobj
+11 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 24 24] /Resources << >> /Length 309 >>
+stream
+0 0 0 rg
+9 21 3 3 re
+12 21 3 3 re
+9 18 3 3 re
+12 18 3 3 re
+9 15 3 3 re
+12 15 3 3 re
+15 15 3 3 re
+18 15 3 3 re
+21 15 3 3 re
+9 12 3 3 re
+12 12 3 3 re
+0 9 3 3 re
+3 9 3 3 re
+6 9 3 3 re
+9 9 3 3 re
+12 9 3 3 re
+15 9 3 3 re
+9 6 3 3 re
+12 6 3 3 re
+9 3 3 3 re
+12 3 3 3 re
+6 0 3 3 re
+9 0 3 3 re
+12 0 3 3 re
+15 0 3 3 re
+f
+endstream
+endobj
+12 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_cactus2)
+  /Rect [780 35 804 59]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 11 0 R >>
+  /F 4
+>>
+endobj
+13 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 500 4] /Resources << >> /Length 23 >>
+stream
+0 0 0 rg
+0 0 500 4 re
+f
+endstream
+endobj
+14 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_floor)
+  /Rect [0 31 500 35]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 13 0 R >>
+  /F 4
+>>
+endobj
+15 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_score)
+  /V (0)
+  /Rect [390 172 490 192]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+16 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_gameover)
+  /V ()
+  /Rect [110 90 390 120]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+17 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (clickzone)
+  /Rect [0 0 500 200]
+  /H /N
+  /A << /S /JavaScript /JS (Engine.triggerInput();) >>
+>>
+endobj
+xref
+0 18
+0000000000 65535 f 
+0000000015 00000 n 
+0000000146 00000 n 
+0000000209 00000 n 
+0000000380 00000 n 
+0000000474 00000 n 
+0000000611 00000 n 
+0000006828 00000 n 
+0000008089 00000 n 
+0000008260 00000 n 
+0000008685 00000 n 
+0000008862 00000 n 
+0000009288 00000 n 
+0000009466 00000 n 
+0000009605 00000 n 
+0000009779 00000 n 
+0000009959 00000 n 
+0000010140 00000 n 
+trailer
+<< /Size 18 /Root 1 0 R >>
+startxref
+10321
+%%EOF

@@ -1,0 +1,459 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+  /AcroForm 3 0 R
+  /Names 4 0 R
+  /OpenAction << /S /JavaScript /JS 6 0 R >>
+>>
+endobj
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [5 0 R]
+  /Count 1
+>>
+endobj
+3 0 obj
+<<
+  /Fields [8 0 R 10 0 R 12 0 R 14 0 R 15 0 R 16 0 R 17 0 R 18 0 R]
+  /DR << /Font << /Helvetica << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>
+>>
+endobj
+4 0 obj
+<<
+  /JavaScript << /Names [(gameScript) << /S /JavaScript /JS 6 0 R >>] >>
+>>
+endobj
+5 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 500 200]
+  /Annots [8 0 R 10 0 R 12 0 R 14 0 R 15 0 R 16 0 R 17 0 R 18 0 R]
+>>
+endobj
+6 0 obj
+<<
+  /Length 7397
+  /Subtype /JavaScript
+>>
+stream
+if (typeof _pdfgame_loaded === 'undefined') {
+var _pdfgame_loaded = true;
+/* PDF Game Engine - Acrobat JS (ES3) */
+var _doc = this; // captured at script top level - in Acrobat doc context this IS the document
+
+var Engine = (function () {
+    var _intervalId = null;
+    var PAGE_H = 200;
+
+    function _pdfRect(gx, gy, w, h) {
+        var py = PAGE_H - gy - h;
+        return [gx, py, gx + w, py + h];
+    }
+
+    function _gamePos(f) {
+        var r = f.rect;
+        var w = r[2] - r[0];
+        var h = r[3] - r[1];
+        return { x: r[0], y: PAGE_H - r[3], w: w, h: h };
+    }
+
+    return {
+        _updateFn: null,
+        _sprites: {"net": 1, "paddle_p": 1, "paddle_cpu": 1, "ball": 1},
+        _sizes: {"net": {w: 2, h: 200}, "paddle_p": {w: 8, h: 50}, "paddle_cpu": {w: 8, h: 50}, "ball": {w: 10, h: 10}},
+        _pos: {},     /* position registry: {name: {x,y,w,h}} in game coords */
+
+        start: function (updateFn, fps) {
+            if (_intervalId !== null) { return; } /* guard: only one interval */
+            Engine._updateFn = updateFn;
+            _intervalId = app.setInterval(
+                "Engine._tick()", Math.round(1000 / fps)
+            );
+        },
+
+        stop: function () {
+            if (_intervalId !== null) {
+                app.clearInterval(_intervalId);
+                _intervalId = null;
+            }
+        },
+
+        _tick: function () {
+            if (Engine._updateFn) { Engine._updateFn(); }
+        },
+
+        _field: function (name) {
+            var nf = Engine._sprites[name] || 1;
+            var fname = nf > 1 ? "sprite_" + name + "_0" : "sprite_" + name;
+            return _doc.getField(fname);
+        },
+
+        move: function (name, gx, gy) {
+            var nf = Engine._sprites[name] || 1;
+            var sz = Engine._sizes[name] || { w: 0, h: 0 };
+            var posW = sz.w, posH = sz.h;
+            for (var fi = 0; fi < nf; fi++) {
+                var fname = nf > 1 ? "sprite_" + name + "_" + fi : "sprite_" + name;
+                var f = _doc.getField(fname);
+                if (!f) { continue; }
+                f.rect = _pdfRect(gx, gy, posW, posH);
+            }
+            Engine._pos[name] = { x: gx, y: gy, w: posW, h: posH };
+        },
+
+        getPos: function (name) {
+            if (Engine._pos[name]) { return Engine._pos[name]; }
+            var f = Engine._field(name);
+            if (!f) { return { x: 0, y: 0, w: 0, h: 0 }; }
+            return _gamePos(f);
+        },
+
+        show: function (name) {
+            var f = _doc.getField("sprite_" + name);
+            if (f) { f.display = display.visible; }
+        },
+
+        hide: function (name) {
+            var f = _doc.getField("sprite_" + name);
+            if (f) { f.display = display.hidden; }
+        },
+
+        setText: function (name, val) {
+            var f = _doc.getField("text_" + name);
+            if (f) { f.value = "" + val; }
+        },
+
+        collides: function (a, b) {
+            var pa = Engine.getPos(a);
+            var pb = Engine.getPos(b);
+            return !(
+                pa.x + pa.w <= pb.x || pb.x + pb.w <= pa.x ||
+                pa.y + pa.h <= pb.y || pb.y + pb.h <= pa.y
+            );
+        },
+
+        random: function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+
+        onInput: function (cb) { Engine._inputCb = cb; },
+
+        triggerInput: function () {
+            if (Engine._inputCb) { Engine._inputCb(); }
+        },
+
+        _inputCb: null
+    };
+})();
+
+(function() { for (var sn in Engine._sprites) { var nf = Engine._sprites[sn]; for (var fi = 1; fi < nf; fi++) { var f = _doc.getField('sprite_' + sn + '_' + fi); if (f) { f.display = display.hidden; } } } })();
+var _net_x = 249;
+var _net_y = 0;
+var _paddle_p_x = 15;
+var _paddle_p_y = 75;
+var _paddle_cpu_x = 477;
+var _paddle_cpu_y = 75;
+var _ball_x = 245;
+var _ball_y = 95;
+var bvx = 7;
+var bvy = 4;
+var pdir = 1;
+var sp = 0;
+var sc = 0;
+var alive = true;
+
+function _on_update() {
+    if ((!alive)) {
+        return;
+    }
+    _paddle_p_y = (_paddle_p_y + (pdir * 5));
+    Engine.move("paddle_p", _paddle_p_x, _paddle_p_y);
+    if ((_paddle_p_y <= 0)) {
+        _paddle_p_y = 0;
+        Engine.move("paddle_p", _paddle_p_x, _paddle_p_y);
+        pdir = 1;
+    }
+    if ((_paddle_p_y >= 150)) {
+        _paddle_p_y = 150;
+        Engine.move("paddle_p", _paddle_p_x, _paddle_p_y);
+        pdir = -1;
+    }
+    if (((_paddle_cpu_y + 25) < _ball_y)) {
+        _paddle_cpu_y = (_paddle_cpu_y + 3);
+        Engine.move("paddle_cpu", _paddle_cpu_x, _paddle_cpu_y);
+    }
+    if (((_paddle_cpu_y + 25) > _ball_y)) {
+        _paddle_cpu_y = (_paddle_cpu_y - 3);
+        Engine.move("paddle_cpu", _paddle_cpu_x, _paddle_cpu_y);
+    }
+    if ((_paddle_cpu_y < 0)) {
+        _paddle_cpu_y = 0;
+        Engine.move("paddle_cpu", _paddle_cpu_x, _paddle_cpu_y);
+    }
+    if ((_paddle_cpu_y > 150)) {
+        _paddle_cpu_y = 150;
+        Engine.move("paddle_cpu", _paddle_cpu_x, _paddle_cpu_y);
+    }
+    _ball_x = (_ball_x + bvx);
+    Engine.move("ball", _ball_x, _ball_y);
+    _ball_y = (_ball_y + bvy);
+    Engine.move("ball", _ball_x, _ball_y);
+    if ((_ball_y <= 0)) {
+        _ball_y = 0;
+        Engine.move("ball", _ball_x, _ball_y);
+        if ((bvy < 0)) {
+            bvy = (-bvy);
+        }
+    }
+    if ((_ball_y >= 190)) {
+        _ball_y = 190;
+        Engine.move("ball", _ball_x, _ball_y);
+        if ((bvy > 0)) {
+            bvy = (-bvy);
+        }
+    }
+    if (((((_ball_x <= 24) && (_ball_x >= 10)) && ((_ball_y + 10) >= _paddle_p_y)) && (_ball_y <= (_paddle_p_y + 50)))) {
+        if ((bvx < 0)) {
+            bvx = (-bvx);
+        }
+    }
+    if ((((((_ball_x + 10) >= 477) && (_ball_x <= 482)) && ((_ball_y + 10) >= _paddle_cpu_y)) && (_ball_y <= (_paddle_cpu_y + 50)))) {
+        if ((bvx > 0)) {
+            bvx = (-bvx);
+        }
+    }
+    if ((_ball_x < 0)) {
+        sc = (sc + 1);
+        Engine.setText("score_c", sc);
+        _ball_x = 245;
+        Engine.move("ball", _ball_x, _ball_y);
+        _ball_y = 95;
+        Engine.move("ball", _ball_x, _ball_y);
+        bvx = 7;
+        bvy = 4;
+        if ((sc >= 5)) {
+            alive = false;
+            Engine.setText("msg", "CPU wins! Click to restart");
+        }
+    }
+    if ((_ball_x > 490)) {
+        sp = (sp + 1);
+        Engine.setText("score_p", sp);
+        _ball_x = 245;
+        Engine.move("ball", _ball_x, _ball_y);
+        _ball_y = 95;
+        Engine.move("ball", _ball_x, _ball_y);
+        bvx = -7;
+        bvy = 4;
+        if ((sp >= 5)) {
+            alive = false;
+            Engine.setText("msg", "You win! Click to restart");
+        }
+    }
+}
+
+function _on_click() {
+    if ((!alive)) {
+        _on_restart();
+        return;
+    }
+    pdir = (-pdir);
+}
+
+function _on_restart() {
+    sp = 0;
+    sc = 0;
+    alive = true;
+    bvx = 7;
+    bvy = 4;
+    pdir = 1;
+    _ball_x = 245;
+    Engine.move("ball", _ball_x, _ball_y);
+    _ball_y = 95;
+    Engine.move("ball", _ball_x, _ball_y);
+    _paddle_p_y = 75;
+    Engine.move("paddle_p", _paddle_p_x, _paddle_p_y);
+    _paddle_cpu_y = 75;
+    Engine.move("paddle_cpu", _paddle_cpu_x, _paddle_cpu_y);
+    Engine.setText("score_p", sp);
+    Engine.setText("score_c", sc);
+    Engine.setText("msg", "");
+}
+
+Engine.onInput(function () {
+    if (typeof _on_click === 'function') { _on_click(); }
+});
+
+Engine.start(_on_update, 15);
+}
+endstream
+endobj
+7 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 2 200] /Resources << >> /Length 23 >>
+stream
+0 0 0 rg
+0 0 2 200 re
+f
+endstream
+endobj
+8 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_net)
+  /Rect [249 0 251 200]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 7 0 R >>
+  /F 4
+>>
+endobj
+9 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 8 50] /Resources << >> /Length 22 >>
+stream
+0 0 0 rg
+0 0 8 50 re
+f
+endstream
+endobj
+10 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_paddle_p)
+  /Rect [15 75 23 125]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 9 0 R >>
+  /F 4
+>>
+endobj
+11 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 8 50] /Resources << >> /Length 22 >>
+stream
+0 0 0 rg
+0 0 8 50 re
+f
+endstream
+endobj
+12 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_paddle_cpu)
+  /Rect [477 75 485 125]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 11 0 R >>
+  /F 4
+>>
+endobj
+13 0 obj
+<< /Type /XObject /Subtype /Form /BBox [0 0 10 10] /Resources << >> /Length 23 >>
+stream
+0 0 0 rg
+0 0 10 10 re
+f
+endstream
+endobj
+14 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (sprite_ball)
+  /Rect [245 95 255 105]
+  /MK << /BG [0 0 0] >>
+  /AP << /N 13 0 R >>
+  /F 4
+>>
+endobj
+15 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_score_p)
+  /V (0)
+  /Rect [150 175 210 195]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+16 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_score_c)
+  /V (0)
+  /Rect [290 175 350 195]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+17 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Tx
+  /Ff 1
+  /T (text_msg)
+  /V ()
+  /Rect [100 85 400 115]
+  /DA (0 0 0 rg /Helvetica 14 Tf)
+  /MK << >>
+  /F 4
+>>
+endobj
+18 0 obj
+<<
+  /Type /Annot
+  /Subtype /Widget
+  /FT /Btn
+  /Ff 65536
+  /T (clickzone)
+  /Rect [0 0 500 200]
+  /H /N
+  /A << /S /JavaScript /JS (Engine.triggerInput();) >>
+>>
+endobj
+xref
+0 19
+0000000000 65535 f 
+0000000015 00000 n 
+0000000146 00000 n 
+0000000209 00000 n 
+0000000387 00000 n 
+0000000481 00000 n 
+0000000625 00000 n 
+0000008099 00000 n 
+0000008237 00000 n 
+0000008409 00000 n 
+0000008545 00000 n 
+0000008722 00000 n 
+0000008859 00000 n 
+0000009041 00000 n 
+0000009180 00000 n 
+0000009356 00000 n 
+0000009538 00000 n 
+0000009720 00000 n 
+0000009896 00000 n 
+trailer
+<< /Size 19 /Root 1 0 R >>
+startxref
+10077
+%%EOF
