@@ -4,3 +4,4 @@ NOTES.md
 .claude/
 *.pdf
 .DS_Store
+__pycache__

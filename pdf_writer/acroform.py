@@ -82,7 +82,7 @@ def label_widget(oid, name, x, y, w, h, value, page_h, font_size=14):
 def clickzone_widget(oid, x, y, w, h, page_h):
     """Invisible button covering the game area — fires Engine.triggerInput() on click."""
     pdf_y = page_h - y - h
-    mouse_up = "<< /S /JavaScript /JS (Engine.triggerInput();) >>"
+    action = "<< /S /JavaScript /JS (Engine.triggerInput();) >>"
     return pdf_dict({
         "/Type":    "/Annot",
         "/Subtype": "/Widget",
@@ -91,5 +91,5 @@ def clickzone_widget(oid, x, y, w, h, page_h):
         "/T":       "(clickzone)",
         "/Rect":    f"[{x} {pdf_y} {x+w} {pdf_y+h}]",
         "/H":       "/N",
-        "/AA":      f"<< /U {mouse_up} >>",
+        "/A":       action,
     })

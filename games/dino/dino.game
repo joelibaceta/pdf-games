@@ -1,0 +1,94 @@
+game:
+    title  = "PDF Dino"
+    width  = 500
+    height = 200
+    fps    = 10
+
+sprites:
+    dino at (50, 117) scale 3:
+        .........XXXX...
+        ........X.XXXX..
+        ........XXXXXX..
+        ........XXXXXX..
+        ........XXX.....
+        .X.....XXXXXX...
+        .X....XXXXX.....
+        .XX..XXXXXXX....
+        .XXX.XXXXX.X....
+        ..XXXXXXXX......
+        ..XXXXXXXX......
+        ...XXXXXXX......
+        ....XX.XX.......
+        ....X...X.......
+        ....X...XX......
+        ....XX..........
+
+    cactus at (480, 141) scale 3:
+        ...XX...
+        ...XX...
+        ...XXXXX
+        ...XX...
+        XXXXXX..
+        ...XX...
+        ...XX...
+        ..XXXX..
+
+    floor at (0, 165) size (500, 4) fill
+
+labels:
+    score    at (390, 8)  size (100, 20) = "0"
+    gameover at (110, 80) size (280, 30) = ""
+
+vars:
+    vy     = 0
+    points = 0
+    speed  = 5
+    alive  = true
+    tick   = 0
+
+on start:
+    cactus.x = 480
+
+on update:
+    if not alive:
+        return
+
+    vy = vy + 1.5
+    dino.y = dino.y + vy
+    if dino.y >= 117:
+        dino.y = 117
+        vy = 0
+
+    cactus.x = cactus.x - speed
+    if cactus.x < -30:
+        cactus.x = random(520, 650)
+
+    if collides(dino, cactus):
+        alive = false
+        dino.y = 117
+        gameover.text = "GAME OVER - click to restart"
+
+    tick = tick + 1
+    if tick >= 20:
+        tick = 0
+        speed = speed + 1
+
+    points = points + 1
+    score.text = points
+
+on click:
+    if not alive:
+        restart()
+        return
+    if dino.y >= 117:
+        vy = -13
+
+on restart:
+    alive = true
+    points = 0
+    speed  = 5
+    vy     = 0
+    tick   = 0
+    dino.y = 117
+    cactus.x = 520
+    gameover.text = ""

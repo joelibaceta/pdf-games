@@ -19,8 +19,12 @@ var Engine = (function () {
 
     return {
         _updateFn: null,
+        _sprites: {}, /* INJECT:SPRITES - map of name -> frame count */
+        _sizes:   {}, /* INJECT:SIZES   - map of name -> {w, h} in points */
+        _pos: {},     /* position registry: {name: {x,y,w,h}} in game coords */
 
         start: function (updateFn, fps) {
+            if (_intervalId !== null) { return; } /* guard: only one interval */
             Engine._updateFn = updateFn;
             _intervalId = app.setInterval(
                 "Engine._tick()", Math.round(1000 / fps)
@@ -38,17 +42,28 @@ var Engine = (function () {
             if (Engine._updateFn) { Engine._updateFn(); }
         },
 
+        _field: function (name) {
+            var nf = Engine._sprites[name] || 1;
+            var fname = nf > 1 ? "sprite_" + name + "_0" : "sprite_" + name;
+            return _doc.getField(fname);
+        },
+
         move: function (name, gx, gy) {
-            var f = _doc.getField("sprite_" + name);
-            if (!f) { return; }
-            var r = f.rect;
-            var w = r[2] - r[0];
-            var h = r[3] - r[1];
-            f.rect = _pdfRect(gx, gy, w, h);
+            var nf = Engine._sprites[name] || 1;
+            var sz = Engine._sizes[name] || { w: 0, h: 0 };
+            var posW = sz.w, posH = sz.h;
+            for (var fi = 0; fi < nf; fi++) {
+                var fname = nf > 1 ? "sprite_" + name + "_" + fi : "sprite_" + name;
+                var f = _doc.getField(fname);
+                if (!f) { continue; }
+                f.rect = _pdfRect(gx, gy, posW, posH);
+            }
+            Engine._pos[name] = { x: gx, y: gy, w: posW, h: posH };
         },
 
         getPos: function (name) {
-            var f = _doc.getField("sprite_" + name);
+            if (Engine._pos[name]) { return Engine._pos[name]; }
+            var f = Engine._field(name);
             if (!f) { return { x: 0, y: 0, w: 0, h: 0 }; }
             return _gamePos(f);
         },
