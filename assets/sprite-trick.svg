@@ -1,0 +1,150 @@
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <rect width="900" height="340" fill="#fff"/>
+
+  <!-- ── STEP 1: Pixel Art ── -->
+  <rect x="10" y="50" width="210" height="260" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="1.5"/>
+  <text x="115" y="38" text-anchor="middle" font-size="11" fill="#aaa" letter-spacing="1">STEP 1</text>
+  <text x="115" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">Pixel art in .game</text>
+
+  <!-- pixel grid 7 cols × 8 rows, cell=22px, origin (28,84) -->
+  <!-- Pattern (X=black, .=white):
+       ..XXXX.
+       .XXXXXX
+       XXXXXXX
+       XXXXXXX
+       .XXXXXX
+       ..XXXX.
+       ...XX..
+       ...XX..  -->
+  <g>
+    <!-- col guide -->
+    <!-- row 0: ..XXXX. -->
+    <rect x="72" y="84" width="22" height="22" fill="#222"/>
+    <rect x="94" y="84" width="22" height="22" fill="#222"/>
+    <rect x="116" y="84" width="22" height="22" fill="#222"/>
+    <rect x="138" y="84" width="22" height="22" fill="#222"/>
+    <!-- row 1: .XXXXXX -->
+    <rect x="50" y="106" width="22" height="22" fill="#222"/>
+    <rect x="72" y="106" width="22" height="22" fill="#222"/>
+    <rect x="94" y="106" width="22" height="22" fill="#222"/>
+    <rect x="116" y="106" width="22" height="22" fill="#222"/>
+    <rect x="138" y="106" width="22" height="22" fill="#222"/>
+    <rect x="160" y="106" width="22" height="22" fill="#222"/>
+    <!-- row 2: XXXXXXX -->
+    <rect x="28" y="128" width="22" height="22" fill="#222"/>
+    <rect x="50" y="128" width="22" height="22" fill="#222"/>
+    <rect x="72" y="128" width="22" height="22" fill="#222"/>
+    <rect x="94" y="128" width="22" height="22" fill="#222"/>
+    <rect x="116" y="128" width="22" height="22" fill="#222"/>
+    <rect x="138" y="128" width="22" height="22" fill="#222"/>
+    <rect x="160" y="128" width="22" height="22" fill="#222"/>
+    <!-- row 3: XXXXXXX -->
+    <rect x="28" y="150" width="22" height="22" fill="#222"/>
+    <rect x="50" y="150" width="22" height="22" fill="#222"/>
+    <rect x="72" y="150" width="22" height="22" fill="#222"/>
+    <rect x="94" y="150" width="22" height="22" fill="#222"/>
+    <rect x="116" y="150" width="22" height="22" fill="#222"/>
+    <rect x="138" y="150" width="22" height="22" fill="#222"/>
+    <rect x="160" y="150" width="22" height="22" fill="#222"/>
+    <!-- row 4: .XXXXXX -->
+    <rect x="50" y="172" width="22" height="22" fill="#222"/>
+    <rect x="72" y="172" width="22" height="22" fill="#222"/>
+    <rect x="94" y="172" width="22" height="22" fill="#222"/>
+    <rect x="116" y="172" width="22" height="22" fill="#222"/>
+    <rect x="138" y="172" width="22" height="22" fill="#222"/>
+    <rect x="160" y="172" width="22" height="22" fill="#222"/>
+    <!-- row 5: ..XXXX. -->
+    <rect x="72" y="194" width="22" height="22" fill="#222"/>
+    <rect x="94" y="194" width="22" height="22" fill="#222"/>
+    <rect x="116" y="194" width="22" height="22" fill="#222"/>
+    <rect x="138" y="194" width="22" height="22" fill="#222"/>
+    <!-- row 6: ...XX.. -->
+    <rect x="94" y="216" width="22" height="22" fill="#222"/>
+    <rect x="116" y="216" width="22" height="22" fill="#222"/>
+    <!-- row 7: ...XX.. -->
+    <rect x="94" y="238" width="22" height="22" fill="#222"/>
+    <rect x="116" y="238" width="22" height="22" fill="#222"/>
+
+    <!-- grid lines -->
+    <rect x="28" y="84" width="154" height="176" fill="none" stroke="#ddd" stroke-width="0.5"/>
+    <!-- vertical lines -->
+    <line x1="50" y1="84" x2="50" y2="260" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="72" y1="84" x2="72" y2="260" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="94" y1="84" x2="94" y2="260" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="116" y1="84" x2="116" y2="260" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="138" y1="84" x2="138" y2="260" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="160" y1="84" x2="160" y2="260" stroke="#ddd" stroke-width="0.5"/>
+    <!-- horizontal lines -->
+    <line x1="28" y1="106" x2="182" y2="106" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="28" y1="128" x2="182" y2="128" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="28" y1="150" x2="182" y2="150" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="28" y1="172" x2="182" y2="172" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="28" y1="194" x2="182" y2="194" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="28" y1="216" x2="182" y2="216" stroke="#ddd" stroke-width="0.5"/>
+    <line x1="28" y1="238" x2="182" y2="238" stroke="#ddd" stroke-width="0.5"/>
+  </g>
+
+  <text x="115" y="285" text-anchor="middle" font-size="10" fill="#888">X = black pixel</text>
+  <text x="115" y="300" text-anchor="middle" font-size="10" fill="#888">. = transparent</text>
+
+  <!-- ── ARROW 1 ── -->
+  <line x1="228" y1="170" x2="268" y2="170" stroke="#555" stroke-width="2"/>
+  <polygon points="268,165 278,170 268,175" fill="#555"/>
+  <text x="253" y="158" text-anchor="middle" font-size="10" fill="#888">compile</text>
+
+  <!-- ── STEP 2: PDF Appearance Stream ── -->
+  <rect x="285" y="50" width="270" height="260" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="1.5"/>
+  <text x="420" y="38" text-anchor="middle" font-size="11" fill="#aaa" letter-spacing="1">STEP 2</text>
+  <text x="420" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">PDF Appearance Stream</text>
+
+  <text x="300" y="98" font-size="10" fill="#555">%% XObject /Form</text>
+  <text x="300" y="114" font-size="10" fill="#555">/BBox [0 0 42 48]</text>
+  <text x="300" y="134" font-size="10" fill="#111">0 0 0 rg  <tspan fill="#888">← set black</tspan></text>
+  <text x="300" y="150" font-size="10" fill="#111">0 30 6 6 re  <tspan fill="#888">← pixel (0,2)</tspan></text>
+  <text x="300" y="166" font-size="10" fill="#111">6 30 6 6 re  <tspan fill="#888">← pixel (1,2)</tspan></text>
+  <text x="300" y="182" font-size="10" fill="#111">12 30 6 6 re</text>
+  <text x="300" y="198" font-size="10" fill="#111">18 30 6 6 re</text>
+  <text x="300" y="214" font-size="10" fill="#111">24 30 6 6 re</text>
+  <text x="300" y="230" font-size="10" fill="#111">...</text>
+  <text x="300" y="246" font-size="10" fill="#111">f  <tspan fill="#888">← fill all rects</tspan></text>
+
+  <rect x="293" y="122" width="254" height="136" rx="4" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="420" y="278" text-anchor="middle" font-size="10" fill="#888">one rect per X pixel, scaled</text>
+  <text x="420" y="293" text-anchor="middle" font-size="10" fill="#888">to screen points (scale × 6pt)</text>
+
+  <!-- ── ARROW 2 ── -->
+  <line x1="562" y1="170" x2="602" y2="170" stroke="#555" stroke-width="2"/>
+  <polygon points="602,165 612,170 602,175" fill="#555"/>
+  <text x="587" y="158" text-anchor="middle" font-size="10" fill="#888">embed in</text>
+  <text x="587" y="185" text-anchor="middle" font-size="10" fill="#888">PDF field</text>
+
+  <!-- ── STEP 3: AcroForm Widget ── -->
+  <rect x="620" y="50" width="270" height="260" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="1.5"/>
+  <text x="755" y="38" text-anchor="middle" font-size="11" fill="#aaa" letter-spacing="1">STEP 3</text>
+  <text x="755" y="72" text-anchor="middle" font-size="12" fill="#333" font-weight="bold">AcroForm Widget</text>
+
+  <!-- mini PDF page -->
+  <rect x="640" y="85" width="230" height="160" rx="4" fill="#fff" stroke="#ccc" stroke-width="1"/>
+  <text x="755" y="100" text-anchor="middle" font-size="9" fill="#bbb">PDF Page</text>
+
+  <!-- sprite field on page -->
+  <rect x="680" y="110" width="42" height="48" fill="#222" rx="1"/>
+  <!-- selection border -->
+  <rect x="678" y="108" width="46" height="52" fill="none" stroke="#0066ff" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- field rect annotation -->
+  <text x="732" y="120" font-size="8.5" fill="#0066ff">/Type /Annot</text>
+  <text x="732" y="133" font-size="8.5" fill="#0066ff">/Subtype /Widget</text>
+  <text x="732" y="146" font-size="8.5" fill="#0066ff">/FT /Btn</text>
+  <text x="732" y="159" font-size="8.5" fill="#0066ff">/T (sprite_bird)</text>
+  <text x="732" y="172" font-size="8.5" fill="#f55">/Rect [80 90 122 138]</text>
+  <text x="732" y="185" font-size="8.5" fill="#0066ff">/AP &lt;&lt; /N stream &gt;&gt;</text>
+
+  <!-- JS update label -->
+  <text x="755" y="260" text-anchor="middle" font-size="10" fill="#f55" font-weight="bold">f.rect = [x, y, x+w, y+h]</text>
+  <text x="755" y="278" text-anchor="middle" font-size="10" fill="#888">JavaScript updates Rect →</text>
+  <text x="755" y="293" text-anchor="middle" font-size="10" fill="#888">Acrobat moves the sprite</text>
+
+  <!-- arrow from JS label to rect property -->
+  <line x1="755" y1="248" x2="780" y2="172" stroke="#f55" stroke-width="1" stroke-dasharray="3,2"/>
+</svg>

@@ -1,0 +1,62 @@
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <rect width="700" height="320" fill="#fff"/>
+
+  <text x="350" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#111">The Game Loop</text>
+
+  <!-- ── Nodes ── -->
+  <!-- PDF Opens -->
+  <rect x="270" y="44" width="160" height="38" rx="6" fill="#111" stroke="none"/>
+  <text x="350" y="68" text-anchor="middle" font-size="12" fill="#fff">PDF Opens</text>
+
+  <!-- arrow down -->
+  <line x1="350" y1="82" x2="350" y2="104" stroke="#555" stroke-width="1.5"/>
+  <polygon points="345,104 355,104 350,114" fill="#555"/>
+
+  <!-- setInterval -->
+  <rect x="220" y="114" width="260" height="38" rx="6" fill="#333" stroke="none"/>
+  <text x="350" y="138" text-anchor="middle" font-size="11" fill="#eee">app.setInterval(tick, 100ms)</text>
+
+  <!-- arrow down -->
+  <line x1="350" y1="152" x2="350" y2="172" stroke="#555" stroke-width="1.5"/>
+  <polygon points="345,172 355,172 350,182" fill="#555"/>
+
+  <!-- Engine._tick() box -->
+  <rect x="170" y="182" width="360" height="100" rx="8" fill="#f5f5f5" stroke="#ddd" stroke-width="1.5"/>
+  <text x="350" y="203" text-anchor="middle" font-size="11" fill="#333" font-weight="bold">Engine._tick()</text>
+
+  <!-- steps inside -->
+  <text x="195" y="222" font-size="10" fill="#555">① run update()  — move sprites, apply physics</text>
+  <text x="195" y="238" font-size="10" fill="#555">② check collisions  — inline AABB via shadow vars</text>
+  <text x="195" y="254" font-size="10" fill="#555">③ update labels  — score, game over text</text>
+  <text x="195" y="270" font-size="10" fill="#555">④ Engine.move()  — write new field.rect values</text>
+
+  <!-- ── Right side: Acrobat renders ── -->
+  <rect x="570" y="182" width="120" height="100" rx="8" fill="#111" stroke="none"/>
+  <text x="630" y="220" text-anchor="middle" font-size="10" fill="#fff">Acrobat</text>
+  <text x="630" y="236" text-anchor="middle" font-size="10" fill="#fff">re-renders</text>
+  <text x="630" y="252" text-anchor="middle" font-size="10" fill="#aaa">field.rect</text>
+  <text x="630" y="268" text-anchor="middle" font-size="10" fill="#aaa">changed →</text>
+  <text x="630" y="284" text-anchor="middle" font-size="10" fill="#fff">frame drawn</text>
+
+  <!-- arrow tick box → acrobat -->
+  <line x1="530" y1="232" x2="566" y2="232" stroke="#555" stroke-width="1.5"/>
+  <polygon points="566,227 576,232 566,237" fill="#555"/>
+
+  <!-- loop arrow: acrobat → back up to setInterval -->
+  <path d="M 630 182 C 630 140, 520 120, 480 133" fill="none" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <polygon points="478,127 480,138 487,131" fill="#555"/>
+  <text x="595" y="148" font-size="10" fill="#888" text-anchor="middle">~100ms later</text>
+
+  <!-- click event note -->
+  <rect x="20" y="190" width="130" height="60" rx="6" fill="#fff8e1" stroke="#f0d060" stroke-width="1.5"/>
+  <text x="85" y="210" text-anchor="middle" font-size="10" fill="#887700" font-weight="bold">click event</text>
+  <text x="85" y="226" text-anchor="middle" font-size="9" fill="#887700">Engine.triggerInput()</text>
+  <text x="85" y="240" text-anchor="middle" font-size="9" fill="#887700">→ onInput callback</text>
+
+  <!-- arrow from click to tick box -->
+  <line x1="150" y1="220" x2="168" y2="220" stroke="#c0a000" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <polygon points="168,215 178,220 168,225" fill="#c0a000"/>
+
+  <!-- fps note -->
+  <text x="350" y="308" text-anchor="middle" font-size="10" fill="#bbb">10-15 fps  ·  AcroForm fields are the pixels  ·  no canvas, no WebGL</text>
+</svg>

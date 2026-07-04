@@ -1,0 +1,145 @@
+<svg viewBox="0 0 780 260" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <rect width="780" height="260" fill="#fff"/>
+
+  <!-- ── LEFT: pixel art grid ── -->
+  <!-- 8 cols × 8 rows, cell = 24px, origin (20, 30) -->
+
+  <!-- row labels -->
+  <text x="12" y="54"  font-size="9" fill="#bbb" text-anchor="end">0</text>
+  <text x="12" y="78"  font-size="9" fill="#bbb" text-anchor="end">1</text>
+  <text x="12" y="102" font-size="9" fill="#bbb" text-anchor="end">2</text>
+  <text x="12" y="126" font-size="9" fill="#bbb" text-anchor="end">3</text>
+  <text x="12" y="150" font-size="9" fill="#bbb" text-anchor="end">4</text>
+  <text x="12" y="174" font-size="9" fill="#bbb" text-anchor="end">5</text>
+  <text x="12" y="198" font-size="9" fill="#bbb" text-anchor="end">6</text>
+  <text x="12" y="222" font-size="9" fill="#bbb" text-anchor="end">7</text>
+
+  <!-- grid background -->
+  <rect x="16" y="32" width="192" height="192" fill="#f9f9f9" stroke="#e8e8e8" stroke-width="1"/>
+
+  <!-- grid lines vertical -->
+  <line x1="40"  y1="32" x2="40"  y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="64"  y1="32" x2="64"  y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="88"  y1="32" x2="88"  y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="112" y1="32" x2="112" y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="136" y1="32" x2="136" y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="160" y1="32" x2="160" y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="184" y1="32" x2="184" y2="224" stroke="#e8e8e8" stroke-width="0.5"/>
+
+  <!-- grid lines horizontal -->
+  <line x1="16" y1="56"  x2="208" y2="56"  stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="16" y1="80"  x2="208" y2="80"  stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="16" y1="104" x2="208" y2="104" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="16" y1="128" x2="208" y2="128" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="16" y1="152" x2="208" y2="152" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="16" y1="176" x2="208" y2="176" stroke="#e8e8e8" stroke-width="0.5"/>
+  <line x1="16" y1="200" x2="208" y2="200" stroke="#e8e8e8" stroke-width="0.5"/>
+
+  <!-- pixels: ..XXXX.. -->
+  <rect x="88"  y="32" width="24" height="24" fill="#111"/>
+  <rect x="112" y="32" width="24" height="24" fill="#111"/>
+  <rect x="136" y="32" width="24" height="24" fill="#111"/>
+  <rect x="160" y="32" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: .XXXXXX. -->
+  <rect x="64"  y="56" width="24" height="24" fill="#111"/>
+  <rect x="88"  y="56" width="24" height="24" fill="#111"/>
+  <rect x="112" y="56" width="24" height="24" fill="#111"/>
+  <rect x="136" y="56" width="24" height="24" fill="#111"/>
+  <rect x="160" y="56" width="24" height="24" fill="#111"/>
+  <rect x="184" y="56" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: XXXXXXXX -->
+  <rect x="16"  y="80" width="24" height="24" fill="#111"/>
+  <rect x="40"  y="80" width="24" height="24" fill="#111"/>
+  <rect x="64"  y="80" width="24" height="24" fill="#111"/>
+  <rect x="88"  y="80" width="24" height="24" fill="#111"/>
+  <rect x="112" y="80" width="24" height="24" fill="#111"/>
+  <rect x="136" y="80" width="24" height="24" fill="#111"/>
+  <rect x="160" y="80" width="24" height="24" fill="#111"/>
+  <rect x="184" y="80" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: XXXXXXXX -->
+  <rect x="16"  y="104" width="24" height="24" fill="#111"/>
+  <rect x="40"  y="104" width="24" height="24" fill="#111"/>
+  <rect x="64"  y="104" width="24" height="24" fill="#111"/>
+  <rect x="88"  y="104" width="24" height="24" fill="#111"/>
+  <rect x="112" y="104" width="24" height="24" fill="#111"/>
+  <rect x="136" y="104" width="24" height="24" fill="#111"/>
+  <rect x="160" y="104" width="24" height="24" fill="#111"/>
+  <rect x="184" y="104" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: .XXXXXX. -->
+  <rect x="64"  y="128" width="24" height="24" fill="#111"/>
+  <rect x="88"  y="128" width="24" height="24" fill="#111"/>
+  <rect x="112" y="128" width="24" height="24" fill="#111"/>
+  <rect x="136" y="128" width="24" height="24" fill="#111"/>
+  <rect x="160" y="128" width="24" height="24" fill="#111"/>
+  <rect x="184" y="128" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: ..XXXX.. -->
+  <rect x="88"  y="152" width="24" height="24" fill="#111"/>
+  <rect x="112" y="152" width="24" height="24" fill="#111"/>
+  <rect x="136" y="152" width="24" height="24" fill="#111"/>
+  <rect x="160" y="152" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: ...XX... -->
+  <rect x="112" y="176" width="24" height="24" fill="#111"/>
+  <rect x="136" y="176" width="24" height="24" fill="#111"/>
+
+  <!-- pixels: ...XX... -->
+  <rect x="112" y="200" width="24" height="24" fill="#111"/>
+  <rect x="136" y="200" width="24" height="24" fill="#111"/>
+
+  <!-- col headers -->
+  <text x="28"  y="24" font-size="9" fill="#bbb" text-anchor="middle">0</text>
+  <text x="52"  y="24" font-size="9" fill="#bbb" text-anchor="middle">1</text>
+  <text x="76"  y="24" font-size="9" fill="#bbb" text-anchor="middle">2</text>
+  <text x="100" y="24" font-size="9" fill="#bbb" text-anchor="middle">3</text>
+  <text x="124" y="24" font-size="9" fill="#bbb" text-anchor="middle">4</text>
+  <text x="148" y="24" font-size="9" fill="#bbb" text-anchor="middle">5</text>
+  <text x="172" y="24" font-size="9" fill="#bbb" text-anchor="middle">6</text>
+  <text x="196" y="24" font-size="9" fill="#bbb" text-anchor="middle">7</text>
+
+  <!-- label -->
+  <text x="112" y="246" font-size="10" fill="#aaa" text-anchor="middle">pixel art  (X = black, . = transparent)</text>
+
+  <!-- ── ARROW ── -->
+  <line x1="224" y1="128" x2="268" y2="128" stroke="#555" stroke-width="2"/>
+  <polygon points="268,123 280,128 268,133" fill="#555"/>
+  <text x="252" y="116" font-size="10" fill="#888" text-anchor="middle">compile</text>
+  <text x="252" y="143" font-size="10" fill="#888" text-anchor="middle">scale=6</text>
+
+  <!-- ── RIGHT: PDF appearance stream ── -->
+  <rect x="288" y="32" width="476" height="192" rx="6" fill="#f9f9f9" stroke="#e0e0e0" stroke-width="1.5"/>
+
+  <!-- header -->
+  <text x="304" y="54" font-size="10" fill="#aaa">%% PDF appearance stream  (XObject /Form)</text>
+  <line x1="296" y1="62" x2="756" y2="62" stroke="#eee" stroke-width="1"/>
+
+  <!-- commands -->
+  <text x="304" y="82"  font-size="11" fill="#111">0 0 0 rg</text>
+  <text x="420" y="82"  font-size="10" fill="#888">← set fill color to black</text>
+
+  <text x="304" y="102" font-size="11" fill="#111">72 114 6 6 re</text>
+  <text x="420" y="102" font-size="10" fill="#888">← pixel (3, 0)  →  x=3×6=18... wait</text>
+
+  <!-- highlighted row to explain the math -->
+  <rect x="296" y="108" width="468" height="22" fill="#fffbe6" rx="2"/>
+  <text x="304" y="124" font-size="11" fill="#111">18 42 6 6 re</text>
+  <text x="420" y="124" font-size="10" fill="#c07000">← col 3, row 0  →  x=3×6=18, y=(7-0)×6=42</text>
+
+  <text x="304" y="144" font-size="11" fill="#111">24 42 6 6 re</text>
+  <text x="420" y="144" font-size="10" fill="#888">← col 4, row 0</text>
+
+  <text x="304" y="162" font-size="11" fill="#111">30 42 6 6 re</text>
+  <text x="420" y="162" font-size="10" fill="#888">← col 5, row 0</text>
+
+  <text x="304" y="180" font-size="11" fill="#aaa">... (one re per X pixel, 52 total)</text>
+
+  <text x="304" y="200" font-size="11" fill="#111">f</text>
+  <text x="420" y="200" font-size="10" fill="#888">← fill all rectangles at once</text>
+
+  <!-- note: PDF Y is flipped -->
+  <text x="524" y="246" font-size="10" fill="#aaa" text-anchor="middle">PDF Y-axis is bottom-up, so rows are flipped</text>
+</svg>
