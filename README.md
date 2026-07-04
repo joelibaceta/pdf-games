@@ -9,9 +9,9 @@
     <td align="center"><b>Pong</b></td>
   </tr>
   <tr>
-    <td><img src="assets/dino.gif" alt="PDF Dino" width="260"/></td>
-    <td><img src="assets/flappy.gif" alt="PDF Flappy" width="260"/></td>
-    <td><img src="assets/pong.gif" alt="PDF Pong" width="260"/></td>
+    <td><img src="assets/game1.gif" alt="PDF Dino" width="260"/></td>
+    <td><img src="assets/game2.gif" alt="PDF Flappy" width="260"/></td>
+    <td><img src="assets/game3.gif" alt="PDF Pong" width="260"/></td>
   </tr>
 </table>
 
