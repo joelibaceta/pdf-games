@@ -1,0 +1,116 @@
+game:
+    title  = "PDF Pong"
+    width  = 500
+    height = 200
+    fps    = 15
+
+sprites:
+    net       at (249, 0)   size (2, 200) fill
+    paddle_p  at (15, 75)   size (8, 50)  fill
+    paddle_cpu at (477, 75)  size (8, 50)  fill
+    ball      at (245, 95)  size (10, 10) fill
+
+labels:
+    score_p at (150, 5) size (60, 20) = "0"
+    score_c at (290, 5) size (60, 20) = "0"
+    msg     at (100, 85) size (300, 30) = ""
+
+vars:
+    bvx   = 7
+    bvy   = 4
+    pdir  = 1
+    sp    = 0
+    sc    = 0
+    alive = true
+
+on update:
+    if not alive:
+        return
+
+    # player paddle: moves automatically, click reverses direction
+    paddle_p.y = paddle_p.y + pdir * 5
+    if paddle_p.y <= 0:
+        paddle_p.y = 0
+        pdir = 1
+    if paddle_p.y >= 150:
+        paddle_p.y = 150
+        pdir = -1
+
+    # cpu paddle: tracks ball with limited speed
+    if paddle_cpu.y + 25 < ball.y:
+        paddle_cpu.y = paddle_cpu.y + 3
+    if paddle_cpu.y + 25 > ball.y:
+        paddle_cpu.y = paddle_cpu.y - 3
+    if paddle_cpu.y < 0:
+        paddle_cpu.y = 0
+    if paddle_cpu.y > 150:
+        paddle_cpu.y = 150
+
+    # move ball
+    ball.x = ball.x + bvx
+    ball.y = ball.y + bvy
+
+    # top/bottom wall bounce
+    if ball.y <= 0:
+        ball.y = 0
+        if bvy < 0:
+            bvy = -bvy
+    if ball.y >= 190:
+        ball.y = 190
+        if bvy > 0:
+            bvy = -bvy
+
+    # ball hits player paddle
+    if ball.x <= 24 and ball.x >= 10 and ball.y + 10 >= paddle_p.y and ball.y <= paddle_p.y + 50:
+        if bvx < 0:
+            bvx = -bvx
+
+    # ball hits cpu paddle
+    if ball.x + 10 >= 477 and ball.x <= 482 and ball.y + 10 >= paddle_cpu.y and ball.y <= paddle_cpu.y + 50:
+        if bvx > 0:
+            bvx = -bvx
+
+    # cpu scores (ball exits left)
+    if ball.x < 0:
+        sc = sc + 1
+        score_c.text = sc
+        ball.x = 245
+        ball.y = 95
+        bvx = 7
+        bvy = 4
+        if sc >= 5:
+            alive = false
+            msg.text = "CPU wins! Click to restart"
+
+    # player scores (ball exits right)
+    if ball.x > 490:
+        sp = sp + 1
+        score_p.text = sp
+        ball.x = 245
+        ball.y = 95
+        bvx = -7
+        bvy = 4
+        if sp >= 5:
+            alive = false
+            msg.text = "You win! Click to restart"
+
+on click:
+    if not alive:
+        restart()
+        return
+    pdir = -pdir
+
+on restart:
+    sp    = 0
+    sc    = 0
+    alive = true
+    bvx   = 7
+    bvy   = 4
+    pdir  = 1
+    ball.x = 245
+    ball.y = 95
+    paddle_p.y   = 75
+    paddle_cpu.y = 75
+    score_p.text = sp
+    score_c.text = sc
+    msg.text = ""

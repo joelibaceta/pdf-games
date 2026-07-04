@@ -23,7 +23,17 @@ sprites:
         ....X...XX......
         ....XX..........
 
-    cactus at (480, 141) scale 3:
+    cactus1 at (480, 141) scale 3:
+        ...XX...
+        ...XX...
+        ...XXXXX
+        ...XX...
+        XXXXXX..
+        ...XX...
+        ...XX...
+        ..XXXX..
+
+    cactus2 at (780, 141) scale 3:
         ...XX...
         ...XX...
         ...XXXXX
@@ -42,12 +52,13 @@ labels:
 vars:
     vy     = 0
     points = 0
-    speed  = 5
+    speed  = 7
     alive  = true
     tick   = 0
 
 on start:
-    cactus.x = 480
+    cactus1.x = 480
+    cactus2.x = 780
 
 on update:
     if not alive:
@@ -59,11 +70,15 @@ on update:
         dino.y = 117
         vy = 0
 
-    cactus.x = cactus.x - speed
-    if cactus.x < -30:
-        cactus.x = random(520, 650)
+    cactus1.x = cactus1.x - speed
+    if cactus1.x < -30:
+        cactus1.x = random(480, 900)
 
-    if collides(dino, cactus):
+    cactus2.x = cactus2.x - speed
+    if cactus2.x < -30:
+        cactus2.x = random(480, 900)
+
+    if collides(dino, cactus1) or collides(dino, cactus2):
         alive = false
         dino.y = 117
         gameover.text = "GAME OVER - click to restart"
@@ -84,11 +99,12 @@ on click:
         vy = -13
 
 on restart:
-    alive = true
-    points = 0
-    speed  = 5
-    vy     = 0
-    tick   = 0
-    dino.y = 117
-    cactus.x = 520
+    alive    = true
+    points   = 0
+    speed    = 7
+    vy       = 0
+    tick     = 0
+    dino.y   = 117
+    cactus1.x = 520
+    cactus2.x = 820
     gameover.text = ""

@@ -1,0 +1,135 @@
+game:
+    title  = "PDF Flappy"
+    width  = 500
+    height = 200
+    fps    = 10
+
+sprites:
+    pipe_top_1 at (450, -150) size (40, 170) fill
+    pipe_bot_1 at (450, 130) size (40, 150) fill
+
+    pipe_top_2 at (725, -150) size (40, 170) fill
+    pipe_bot_2 at (725, 130) size (40, 150) fill
+
+    bird at (80, 85) scale 3:
+        ...XXX..
+        ..X.XXX.
+        .XXXXXXX
+        XXXXXXXX
+        .XXXXXXX
+        ..XXXXX.
+        ...XX...
+        ........
+
+    ground at (0, 190) size (500, 10) fill
+
+labels:
+    score    at (220, 5)  size (60, 20) = "0"
+    gameover at (80, 80)  size (340, 40) = ""
+
+vars:
+    vy       = 0
+    alive    = true
+    points   = 0
+    pipe_x1  = 450
+    pipe_x2  = 725
+    gap_top1 = 80
+    gap_top2 = 55
+    gap_sz1  = 80
+    gap_sz2  = 80
+    scored1  = false
+    scored2  = false
+
+on start:
+    pipe_top_1.y = gap_top1 - 170
+    pipe_bot_1.y = gap_top1 + gap_sz1
+    pipe_top_2.y = gap_top2 - 170
+    pipe_bot_2.y = gap_top2 + gap_sz2
+
+on update:
+    if not alive:
+        return
+
+    vy = vy + 2
+    bird.y = bird.y + vy
+
+    if bird.y < 0:
+        bird.y = 0
+        vy = 0
+
+    if bird.y >= 166:
+        bird.y = 166
+        alive = false
+        gameover.text = "GAME OVER - click to restart"
+        return
+
+    pipe_x1 = pipe_x1 - 5
+    pipe_top_1.x = pipe_x1
+    pipe_bot_1.x = pipe_x1
+
+    pipe_x2 = pipe_x2 - 5
+    pipe_top_2.x = pipe_x2
+    pipe_bot_2.x = pipe_x2
+
+    if pipe_x1 < -40:
+        pipe_x1 = random(500, 750)
+        gap_top1 = random(35, 115)
+        gap_sz1 = random(65, 95)
+        pipe_top_1.x = pipe_x1
+        pipe_bot_1.x = pipe_x1
+        pipe_top_1.y = gap_top1 - 170
+        pipe_bot_1.y = gap_top1 + gap_sz1
+        scored1 = false
+
+    if pipe_x2 < -40:
+        pipe_x2 = random(500, 750)
+        gap_top2 = random(35, 115)
+        gap_sz2 = random(65, 95)
+        pipe_top_2.x = pipe_x2
+        pipe_bot_2.x = pipe_x2
+        pipe_top_2.y = gap_top2 - 170
+        pipe_bot_2.y = gap_top2 + gap_sz2
+        scored2 = false
+
+    if not scored1 and pipe_x1 < 65:
+        points = points + 1
+        score.text = points
+        scored1 = true
+
+    if not scored2 and pipe_x2 < 65:
+        points = points + 1
+        score.text = points
+        scored2 = true
+
+    if collides(bird, pipe_top_1) or collides(bird, pipe_bot_1) or collides(bird, pipe_top_2) or collides(bird, pipe_bot_2):
+        alive = false
+        gameover.text = "GAME OVER - click to restart"
+
+on click:
+    if not alive:
+        restart()
+        return
+    vy = -12
+
+on restart:
+    alive    = true
+    vy       = 0
+    points   = 0
+    bird.y   = 85
+    pipe_x1  = 450
+    pipe_x2  = 725
+    gap_top1 = 80
+    gap_top2 = 55
+    gap_sz1  = 80
+    gap_sz2  = 80
+    pipe_top_1.x = pipe_x1
+    pipe_bot_1.x = pipe_x1
+    pipe_top_2.x = pipe_x2
+    pipe_bot_2.x = pipe_x2
+    pipe_top_1.y = gap_top1 - 170
+    pipe_bot_1.y = gap_top1 + gap_sz1
+    pipe_top_2.y = gap_top2 - 170
+    pipe_bot_2.y = gap_top2 + gap_sz2
+    scored1  = false
+    scored2  = false
+    gameover.text = ""
