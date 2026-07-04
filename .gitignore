@@ -1,0 +1,6 @@
+RFC-*.md
+*.spec.md
+NOTES.md
+.claude/
+*.pdf
+.DS_Store
