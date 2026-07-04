@@ -13,6 +13,11 @@
     <td><img src="assets/game2.gif" alt="PDF Flappy" width="260"/></td>
     <td><img src="assets/game3.gif" alt="PDF Pong" width="260"/></td>
   </tr>
+    <tr>
+    <td><a href="https://github.com/joelibaceta/pdf-games/raw/main/games/dino/dino.pdf">Dino.pdf</a></td>
+    <td><a href="https://github.com/joelibaceta/pdf-games/raw/main/games/flappy/flappy.pdf">Flappy.pdf</a></td>
+    <td><a href="https://github.com/joelibaceta/pdf-games/raw/main/games/pong/pong.pdf">Pong.pdf</a></td>
+  </tr>
 </table>
 
 > **Best experience: Adobe Acrobat Reader** (desktop) — enable JavaScript when prompted.  
